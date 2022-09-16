@@ -150,4 +150,18 @@ public class ZippoTest {
 
     }
 
+
+    @Test
+    public void extractValueTest() {
+
+        Object countryInfo = given()
+                .when()
+                .get("/us/08536")
+                .then()
+                .extract().path("country");
+
+        System.out.println(countryInfo);
+
+    }
+
 }
