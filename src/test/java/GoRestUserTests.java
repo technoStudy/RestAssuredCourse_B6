@@ -28,8 +28,8 @@ public class GoRestUserTests {
 
 
         requestBody = new HashMap<>();
-        requestBody.put("name", "Techno Test User");
-        requestBody.put("email", "test4567432@tech3no.com");
+        requestBody.put("name", "BlahBlah");
+        requestBody.put("email", "blahbla3h12@technoblah.com");
         requestBody.put("gender", "female");
         requestBody.put("status", "active");
 
@@ -45,17 +45,38 @@ public class GoRestUserTests {
                 .post("/public/v2/users")
                 .then()
                 .log().body()
+                .body("name", equalTo(requestBody.get("name")))
                 .statusCode(201)
                 .extract().path("id");
 
     }
 
-    @Test
+    @Test(dependsOnMethods = "createUserTest")
     public void editUserTest() {
 
+        HashMap<String, String> updateRequestBody = new HashMap<>();
+        updateRequestBody.put("name", "Updated Blah Blah name");
+
         given()
+                .spec(reqSpec)
+                .body(updateRequestBody)
                 .when()
-                .then();
+                .put("/public/v2/users/" + userId)
+                .then()
+                .statusCode(200);
+
+    }
+
+    @Test(dependsOnMethods = "editUserTest")
+    public void deleteUserTest() {
+
+        given()
+                .spec(reqSpec)
+                .when()
+                .delete("/public/v2/users/" + userId)
+                .then()
+                .log().body()
+                .statusCode(204);
 
     }
 
