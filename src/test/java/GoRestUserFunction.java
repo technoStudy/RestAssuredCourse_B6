@@ -66,4 +66,33 @@ public class GoRestUserFunction {
 
     }
 
+
+    @Test(dependsOnMethods = "createUserNegativeTest")
+    public void editUserTest() {
+
+        HashMap<String, String> reqBodyForUpdate = new HashMap<>();
+        reqBodyForUpdate.put("name", "newTestUser name");
+
+        given()
+                .spec(reqSpec)
+                .body(reqBodyForUpdate)
+                .when()
+                .put("/public/v2/users/" + user_id)
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("name", equalTo(reqBodyForUpdate.get("name")));
+
+    }
+
+
+    @Test
+    public void deleteUserTest() {
+
+        given()
+                .when()
+                .then();
+
+    }
+
 }
