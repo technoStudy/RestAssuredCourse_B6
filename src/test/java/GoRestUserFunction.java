@@ -28,7 +28,7 @@ public class GoRestUserFunction {
 
         requestBody = new HashMap<>();
         requestBody.put("name", "Test User Name");
-        requestBody.put("email", "testuser@gorest.com");
+        requestBody.put("email", "testusertechno@goreststudy.com");
         requestBody.put("gender", "male");
         requestBody.put("status", "active");
 
@@ -62,12 +62,31 @@ public class GoRestUserFunction {
                 .post("/public/v2/users")
                 .then()
                 .log().body()
-                .statusCode(422);
+                .statusCode(422)
+                .body("message[0]", equalTo("has already been taken"));
 
     }
 
 
     @Test(dependsOnMethods = "createUserNegativeTest")
+    public void getUserAndValidate() {
+
+        given()
+                .spec(reqSpec)
+                .when()
+                .get("/public/v2/users/" + user_id)
+                .then()
+                .log().body()
+                .statusCode(200)
+                .body("name", equalTo(requestBody.get("name")))
+                .body("email", equalTo(requestBody.get("email")))
+                .body("gender", equalTo(requestBody.get("gender")))
+                .body("status", equalTo(requestBody.get("status")));
+
+    }
+
+
+    @Test(dependsOnMethods = "getUserAndValidate")
     public void editUserTest() {
 
         HashMap<String, String> reqBodyForUpdate = new HashMap<>();
@@ -86,12 +105,30 @@ public class GoRestUserFunction {
     }
 
 
-    @Test
+    @Test(dependsOnMethods = "editUserTest")
     public void deleteUserTest() {
 
         given()
+                .spec(reqSpec)
                 .when()
-                .then();
+                .delete("/public/v2/users/" + user_id)
+                .then()
+                .log().body()
+                .statusCode(204);
+
+    }
+
+
+    @Test(dependsOnMethods = "deleteUserTest")
+    public void deleteUserNegativeTest() {
+
+        given()
+                .spec(reqSpec)
+                .when()
+                .delete("/public/v2/users/" + user_id)
+                .then()
+                .log().body()
+                .statusCode(404);
 
     }
 
