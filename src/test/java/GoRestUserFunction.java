@@ -14,6 +14,7 @@ public class GoRestUserFunction {
 
     private RequestSpecification reqSpec;
     private Object user_id;
+    private HashMap<String, String> requestBody;
 
     @BeforeClass
     public void setup() {
@@ -25,17 +26,17 @@ public class GoRestUserFunction {
                 .header("Authorization", "Bearer a970f0a198c804bfd481ad5fd1420649fdc33f0a25dfaa96fae1cde5f0a94637")
                 .contentType(ContentType.JSON);
 
+        requestBody = new HashMap<>();
+        requestBody.put("name", "Test User Name");
+        requestBody.put("email", "testuser@gorest.com");
+        requestBody.put("gender", "male");
+        requestBody.put("status", "active");
+
     }
 
 
     @Test
     public void createUserTest() {
-
-        HashMap<String, String> requestBody = new HashMap<>();
-        requestBody.put("name", "Test User Name");
-        requestBody.put("email", "testuser@gorest.com");
-        requestBody.put("gender", "male");
-        requestBody.put("status", "active");
 
         user_id = given()
                 .spec(reqSpec)
@@ -51,12 +52,17 @@ public class GoRestUserFunction {
     }
 
 
-    @Test
+    @Test(dependsOnMethods = "createUserTest")
     public void createUserNegativeTest() {
 
         given()
+                .spec(reqSpec)
+                .body(requestBody)
                 .when()
-                .then();
+                .post("/public/v2/users")
+                .then()
+                .log().body()
+                .statusCode(422);
 
     }
 
