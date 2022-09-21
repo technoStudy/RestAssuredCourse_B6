@@ -1,0 +1,13 @@
+<suite name="Regression Test Suite">
+
+    <test name="Regression Test">
+
+        <classes>
+            <class name="GoRestUserTestWithPojo"></class>
+            <class name="ZippoTest"></class>
+            <class name="GoRestUserFunction"></class>
+        </classes>
+
+    </test>
+
+</suite>
